@@ -1,6 +1,37 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const app = express();
-app.get("/api/user/login", (req, res) => {
-  res.send("Heisann Verden via get/listen express.js");
+const mongoose = require("mongoose");
+const url = "mongodb://localhost/blog";
+const User = require("./models/user");
+const Post = require("./models/post");
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.post("/api/user/login", (req, res) => {
+  mongoose.connect(url, {}, function (err) {
+    if (err) throw err;
+    User.find(
+      {
+        username: req.body.username,
+        password: req.body.password,
+      },
+      function (err, user) {
+        if (err) throw err;
+        if (user.length === 1) {
+          return res.status(200).json({
+            status: "success",
+            data: user,
+          });
+        } else {
+          return res.status(200).json({
+            status: "fail",
+            message: "Login Failed",
+          });
+        }
+      }
+    );
+  });
 });
-app.listen(3000, () => console.log("lyder på porten 3000"));
+app.listen(3000, () => console.log("Listening on port 3000"));
