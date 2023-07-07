@@ -3,3 +3,30 @@ npm install express --save
 node index.js
 npm install body-parser --save
 npm install mongoose --save
+
+      A Mongoose Schema defines the structure and property of the document in the MongoDB collection. This Schema is a way to define expected properties and values along with the constraints and indexes.
+
+      Everything in Mongoose starts with a Schema. Each schema maps to a MongoDB collection and defines the shape of the documents within that collection.
+
+        import mongoose from 'mongoose';
+        const { Schema } = mongoose;
+
+        const blogSchema = new Schema({
+          title: String, // String is shorthand for {type: String}
+          author: String,
+          body: String,
+          comments: [{ body: String, date: Date }],
+          date: { type: Date, default: Date.now },
+          hidden: Boolean,
+          meta: {
+            votes: Number,
+            favs: Number
+          }
+        });
+        
+create database on mongodb :
+    { "name": "Administrator", "username": "Admin", "password": "1234" }
+
+
+brew services start mongodb-community@6.0
+brew services stop mongodb-community@6.0

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose"); //a module for monogdb
 const Schema = mongoose.Schema;
 
 //creating a schema
@@ -15,5 +15,5 @@ const userSchema = new Schema(
   { collection: "user" }
 );
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema); //A Mongoose model is a wrapper of the Mongoose schema.
 module.exports = User;

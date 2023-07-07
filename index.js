@@ -2,16 +2,19 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const mongoose = require("mongoose");
-const url = "mongodb://localhost/blog";
+const url = "mongodb://localhost/blog"; //url of data at mongoDB
 const User = require("./models/user");
 const Post = require("./models/post");
 
-app.use(bodyParser.json());
+app.use(bodyParser.json()); //parse coming request
 app.use(bodyParser.urlencoded({ extended: false }));
 
+//at the end, send matched/found user to login component via url
 app.post("/api/user/login", (req, res) => {
+  //open monoose default connection to mongoDB
   mongoose.connect(url, {}, function (err) {
     if (err) throw err;
+    //pars and match monoose user in the request
     User.find(
       {
         username: req.body.username,
@@ -34,4 +37,4 @@ app.post("/api/user/login", (req, res) => {
     );
   });
 });
-app.listen(3000, () => console.log("Listening on port 3000"));
+app.listen(3000, () => console.log("hører på porten 3000"));
