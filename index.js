@@ -1,10 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
+
 const mongoose = require("mongoose");
 const url = "mongodb://localhost/blog"; //url of data at mongoDB
-const User = require("./models/user");
-const Post = require("./models/post");
+const User = require("./user");
+
+mongoose.set("strictQuery", true);
 
 app.use(bodyParser.json()); //parse coming request
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -14,7 +16,7 @@ app.post("/api/user/login", (req, res) => {
   //open monoose default connection to mongoDB
   mongoose.connect(url, {}, function (err) {
     if (err) throw err;
-    //pars and match monoose user in the request
+    //pars and match monoose user in the request and respond
     User.find(
       {
         username: req.body.username,
