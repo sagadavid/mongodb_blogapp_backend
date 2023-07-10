@@ -13,15 +13,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 mongoose.set("strictQuery", true);
 
-mongoose
-  .connect(url, {})
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((err) => {
-    console.error("Error connecting to MongoDB:", err);
-    process.exit(1);
-  });
+// mongoose
+//   .connect(url, {})
+//   .then(() => {
+//     console.log("Connected to MongoDB");
+//   })
+//   .catch((err) => {
+//     console.error("Error connecting to MongoDB:", err);
+//     process.exit(1);
+//   });
 
 //// Endpoint for user login
 // app.post('/api/user/login', (req, res) => {
@@ -65,7 +65,7 @@ app.post("/api/user/login", async (req, res) => {
         data: user,
       });
     } else {
-      return res.status(200).json({
+      return res.status(500).json({
         status: "fail",
         message: "Login Failed",
       });
@@ -97,8 +97,9 @@ app.post("/api/user/login", async (req, res) => {
 // });
 // app.listen(3000, () => console.log("Listening on port 3000"));
 
-app.post("/api/post/getAllPost", async (req, res) => {
+app.post("/api/post/getAllPosts", async (req, res) => {
   try {
+    await mongoose.connect(url);
     const posts = await Post.find().sort({ _id: -1 });
     res.status(200).json({
       status: "success",

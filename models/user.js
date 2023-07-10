@@ -12,7 +12,7 @@ const userSchema = new Schema(
     password: { type: String, required: true },
     name: { type: String },
   },
-  { collection: "User" }
+  { collection: "user" }
 );
 
 const User = mongoose.model("User", userSchema); //A Mongoose model is a wrapper of the Mongoose schema.

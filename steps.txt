@@ -30,5 +30,8 @@ create database on mongodb :
 (npm update mongoose)
 
 run the server= node index.js
-run the database = brew services start/stop mongodb-community@6.0
+run the database = 
+brew services start mongodb-community@6.0
+brew services restart mongodb-community@6.0
+brew services stop mongodb-community@6.0
 run angular=ng serve --proxy-config proxy.conf.json
