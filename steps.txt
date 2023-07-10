@@ -27,6 +27,8 @@ npm install mongoose --save
 create database on mongodb :
     { "name": "Administrator", "username": "Admin", "password": "1234" }
 
+(npm update mongoose)
+
 run the server= node index.js
 run the database = brew services start/stop mongodb-community@6.0
 run angular=ng serve --proxy-config proxy.conf.json
