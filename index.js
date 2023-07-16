@@ -13,56 +13,21 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 mongoose.set("strictQuery", true);
 
-// mongoose
-//   .connect(url, {})
-//   .then(() => {
-//     console.log("Connected to MongoDB");
-//   })
-//   .catch((err) => {
-//     console.error("Error connecting to MongoDB:", err);
-//     process.exit(1);
-//   });
-
-//// Endpoint for user login
-// app.post('/api/user/login', (req, res) => {
-//   mongoose.connect(url, { },
-// function(err) {
-//       if (err) throw err;
-//       User.find({
-//           username: req.body.username,
-//           password: req.body.password
-//       }, function(err, user) {
-//           if (err) throw err;
-//           if (user.length === 1) {
-//               return res.status(200).json({
-//                   status: 'success',
-//                   data: user
-//               })
-//           } else {
-//               return res.status(200).json({
-//                   status: 'fail',
-//                   message: 'Login Failed'
-//               })
-//           }
-
-//       })
-//   });
-// });
 app.post("/api/user/login", async (req, res) => {
   try {
     // Open a connection to the MongoDB database
     await mongoose.connect(url);
 
     // Find the user in the database
-    const user = await User.find({
+    const loggedUser = await User.find({
       username: req.body.username,
       password: req.body.password,
     });
 
-    if (user.length === 1) {
+    if (loggedUser.length === 1) {
       return res.status(200).json({
         status: "success",
-        data: user,
+        data: loggedUser,
       });
     } else {
       return res.status(500).json({
@@ -82,34 +47,40 @@ app.post("/api/user/login", async (req, res) => {
   }
 });
 
-////endpoint get all posts
-// app.post("/api/post/getAllPost", (req, res) => {
-//   mongoose.connect(url, {}, function (err) {
-//     if (err) throw err;
-//     Post.find({}, [], { sort: { _id: -1 } }, (err, Doc) => {
-//       if (err) throw err;
-//       return res.status(200).json({
-//         status: "success",
-//         data: Doc,
-//       });
-//     });
-//   });
-// });
-// app.listen(3000, () => console.log("Listening on port 3000"));
-
 app.post("/api/post/getAllPosts", async (req, res) => {
   try {
     await mongoose.connect(url);
-    const posts = await Post.find().sort({ _id: -1 });
+    const allPosts = await Post.find().sort({ _id: -1 });
     res.status(200).json({
       status: "success",
-      data: posts,
+      data: allPosts,
     });
   } catch (err) {
     console.error("Error retrieving posts:", err);
     res.status(500).json({
       status: "error",
       message: "An error occurred while retrieving posts",
+    });
+  }
+});
+
+app.post("/api/post/getPostsByAuthor", async (req, res) => {
+  try {
+    await mongoose.connect(url);
+    const authorsPosts = await Post.find(
+      { author_id: req.body.author_id },
+      [],
+      { sort: { _id: -1 } }
+    );
+    res.status(200).json({
+      status: "success",
+      data: authorsPosts,
+    });
+  } catch (err) {
+    console.error("Error retrieving authors posts:", err);
+    res.status(500).json({
+      status: "error",
+      message: "An error occurred while retrieving authors posts",
     });
   }
 });
