@@ -1,17 +1,24 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
+const port = 3000;
 
 const mongoose = require("mongoose");
 const url = "mongodb://localhost/blog"; // URL of the MongoDB database
 
 const User = require("./models/user");
 const Post = require("./models/post");
-
+//middleware
 app.use(bodyParser.json()); // Parse incoming requests
 app.use(bodyParser.urlencoded({ extended: false }));
 
 mongoose.set("strictQuery", true);
+
+// Connect to MongoDB
+mongoose
+  .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("Connected to MongoDB successfully"))
+  .catch((err) => console.error("Error connecting to MongoDB:", err.message));
 
 app.post("/api/user/login", async (req, res) => {
   try {
@@ -85,24 +92,29 @@ app.post("/api/post/getPostsByAuthor", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log("Server started on port 3000");
+// Route: Create Post
+app.post("/api/post/createPost", async (req, res) => {
+  try {
+    const { title, text, author_id } = req.body;
+    const post = new Post({
+      title,
+      text,
+      author_id: new mongoose.Types.ObjectId(author_id), //Error creating a new post: TypeError: Class constructor ObjectId cannot be invoked without 'new'
+    });
+    const savedPost = await post.save();
+    return res.status(200).json({
+      status: "success",
+      data: savedPost,
+    });
+  } catch (err) {
+    console.error("Error creating a new post:", err);
+    res.status(500).json({
+      status: "error",
+      message: "Failed to create a new post",
+    });
+  }
 });
 
-app.post("/api/post/createPost", (req, res) => {
-  mongoose.connect(url, {}, function (err) {
-    if (err) throw err;
-    const post = new Post({
-      title: req.body.title,
-      text: req.body.text,
-      author_id: mongoose.Types.ObjectId(req.body.author_id),
-    });
-    post.save((err, doc) => {
-      if (err) throw err;
-      return res.status(200).json({
-        status: "success",
-        data: doc,
-      });
-    });
-  });
+app.listen(port, () => {
+  console.log("Server started on port 3000");
 });
